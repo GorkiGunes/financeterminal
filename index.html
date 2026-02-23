@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinanceX Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="authScreen" class="auth-screen">
+  <div class="auth-bg">
+    <div class="auth-grid"></div>
+    <div class="auth-glow"></div>
+  </div>
+  <div class="auth-container">
+    <div class="auth-logo">
+      <span class="logo-fx">Finance</span><span class="logo-x">X</span>
+      <div class="logo-sub">PROFESSIONAL TERMINAL</div>
+    </div>
+    
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuth('login')">GİRİŞ YAP</button>
+      <button class="auth-tab" onclick="switchAuth('register')">KAYIT OL</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="loginForm" class="auth-form active">
+      <div class="input-group">
+        <label>E-POSTA / KULLANICI ADI</label>
+        <input type="text" id="loginEmail" placeholder="ornek@email.com">
+      </div>
+      <div class="input-group">
+        <label>PAROLA</label>
+        <input type="password" id="loginPass" placeholder="••••••••">
+      </div>
+      <div class="auth-options">
+        <label class="checkbox-label"><input type="checkbox"> Beni hatırla</label>
+        <a href="#" class="forgot-link">Parolayı Unuttum</a>
+      </div>
+      <button class="auth-btn" onclick="doLogin()">GİRİŞ YAP →</button>
+      <div class="auth-divider"><span>VEYA</span></div>
+      <button class="auth-btn-demo" onclick="loginDemo()">DEMO HESABIYLA GİR</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="registerForm" class="auth-form">
+      <div id="regStep1">
+        <div class="input-row">
+          <div class="input-group">
+            <label>AD</label>
+            <input type="text" id="regFirstName" placeholder="Adınız">
+          </div>
+          <div class="input-group">
+            <label>SOYAD</label>
+            <input type="text" id="regLastName" placeholder="Soyadınız">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>KULLANICI ADI</label>
+          <input type="text" id="regUsername" placeholder="kullanici_adi">
+        </div>
+        <div class="input-group">
+          <label>E-POSTA</label>
+          <input type="email" id="regEmail" placeholder="ornek@email.com">
+        </div>
+        <div class="input-group">
+          <label>PAROLA</label>
+          <input type="password" id="regPass" placeholder="En az 8 karakter">
+          <div class="pass-strength" id="passStrength"></div>
+        </div>
+        <div class="input-group">
+          <label>PAROLA TEKRAR</label>
+          <input type="password" id="regPass2" placeholder="Parolayı tekrar girin">
+        </div>
+        <button class="auth-btn" onclick="sendVerification()">DOĞRULAMA KODU GÖNDER →</button>
+      </div>
+      <div id="regStep2" style="display:none">
+        <div class="verify-info">
+          <div class="verify-icon">✉</div>
+          <p>E-posta adresinize 6 haneli doğrulama kodu gönderildi.</p>
+          <p class="verify-email" id="verifyEmailDisplay"></p>
+        </div>
+        <div class="input-group">
+          <label>DOĞRULAMA KODU</label>
+          <div class="code-inputs">
+            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,1)">
+            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,2)">
+            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,3)">
+            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,4)">
+            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,5)">
+            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,6)">
+          </div>
+        </div>
+        <div class="resend-code">
+          Kodu almadınız mı? <a href="#" onclick="resendCode()">Tekrar gönder</a>
+          <span id="resendTimer"></span>
+        </div>
+        <button class="auth-btn" onclick="verifyCode()">HESABI OLUŞTUR →</button>
+        <button class="auth-btn-back" onclick="backToStep1()">← Geri</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN TERMINAL -->
+<div id="mainTerminal" style="display:none">
+
+  <!-- TOP TICKER BAND -->
+  <div class="ticker-band">
+    <div class="ticker-label">CANLI</div>
+    <div class="ticker-wrapper">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-logo">
+      <span class="logo-fx">Finance</span><span class="logo-x">X</span>
+    </div>
+    <div class="nav-links">
+      <div class="nav-item active" onclick="showPage('home')">
+        <span>ANASAYFA</span>
+      </div>
+      <div class="nav-item dropdown">
+        <span onclick="showPage('stocks')">HİSSELER</span>
+        <div class="dropdown-menu">
+          <div class="dropdown-section">
+            <div class="dropdown-title">🌏 ASYA BORSALARI</div>
+            <a onclick="showExchange('tokyo')">Tokyo (Nikkei 225)</a>
+            <a onclick="showExchange('shanghai')">Şangay (SSE)</a>
+            <a onclick="showExchange('hongkong')">Hong Kong (HSI)</a>
+            <a onclick="showExchange('seoul')">Seul (KOSPI)</a>
+          </div>
+          <div class="dropdown-section">
+            <div class="dropdown-title">🌍 AVRUPA BORSALARI</div>
+            <a onclick="showExchange('london')">Londra (FTSE 100)</a>
+            <a onclick="showExchange('frankfurt')">Frankfurt (DAX)</a>
+            <a onclick="showExchange('paris')">Paris (CAC 40)</a>
+            <a onclick="showExchange('amsterdam')">Amsterdam (AEX)</a>
+          </div>
+          <div class="dropdown-section">
+            <div class="dropdown-title">🇹🇷 TÜRK BORSASI</div>
+            <a onclick="showExchange('bist')">BIST 100</a>
+          </div>
+          <div class="dropdown-section">
+            <div class="dropdown-title">🇺🇸 AMERİKAN BORSALARI</div>
+            <a onclick="showExchange('nyse')">NYSE</a>
+            <a onclick="showExchange('nasdaq')">NASDAQ</a>
+            <a onclick="showExchange('sp500')">S&P 500</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item dropdown">
+        <span onclick="showPage('forex')">DÖVİZ</span>
+        <div class="dropdown-menu">
+          <div class="dropdown-section">
+            <div class="dropdown-title">💱 DÖVİZ ÇİFTLERİ</div>
+            <a onclick="showForexGroup('major')">Majör Dövizler</a>
+            <a onclick="showForexGroup('minor')">Minör Dövizler</a>
+            <a onclick="showForexGroup('exotic')">Egzotik Dövizler</a>
+            <a onclick="showForexGroup('emerging')">Gelişen Piyasalar</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item dropdown">
+        <span onclick="showPage('crypto')">KRİPTO</span>
+        <div class="dropdown-menu">
+          <div class="dropdown-section">
+            <div class="dropdown-title">₿ KRİPTO PARA</div>
+            <a onclick="showCryptoGroup('top10')">Top 10</a>
+            <a onclick="showCryptoGroup('defi')">DeFi Tokenleri</a>
+            <a onclick="showCryptoGroup('altcoins')">Altcoinler</a>
+            <a onclick="showCryptoGroup('all')">Tümü (100)</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item dropdown">
+        <span onclick="showPage('commodities')">EMTİA</span>
+        <div class="dropdown-menu">
+          <div class="dropdown-section">
+            <div class="dropdown-title">🥇 DEĞERLİ METALLER</div>
+            <a onclick="showCommodityGroup('metals')">Metaller (Altın, Gümüş...)</a>
+            <a onclick="showCommodityGroup('energy')">Enerji (Petrol, Doğalgaz...)</a>
+            <a onclick="showCommodityGroup('agriculture')">Tarım Ürünleri</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="market-time" id="marketTime"></div>
+      <div class="nav-user" onclick="toggleUserMenu()">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span id="userName">Kullanıcı</span>
+        <div class="user-dropdown" id="userDropdown">
+          <a href="#">Profil</a>
+          <a href="#">Ayarlar</a>
+          <a href="#">Favoriler</a>
+          <a href="#" onclick="doLogout()">Çıkış Yap</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGES -->
+  <div id="pageContent">
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active">
+      <div class="dashboard-grid">
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+          <div class="summary-card green">
+            <div class="card-label">ALTIN</div>
+            <div class="card-value" id="goldCard">$2,341.50</div>
+            <div class="card-change">+0.85%</div>
+          </div>
+          <div class="summary-card red">
+            <div class="card-label">USD/TRY</div>
+            <div class="card-value" id="usdCard">₺32.45</div>
+            <div class="card-change">-0.23%</div>
+          </div>
+          <div class="summary-card green">
+            <div class="card-label">BİTCOİN</div>
+            <div class="card-value" id="btcCard">$67,234</div>
+            <div class="card-change">+2.14%</div>
+          </div>
+          <div class="summary-card green">
+            <div class="card-label">BIST 100</div>
+            <div class="card-value">9,847</div>
+            <div class="card-change">+1.02%</div>
+          </div>
+          <div class="summary-card red">
+            <div class="card-label">S&P 500</div>
+            <div class="card-value">5,234</div>
+            <div class="card-change">-0.45%</div>
+          </div>
+          <div class="summary-card green">
+            <div class="card-label">PETROL (WTI)</div>
+            <div class="card-value">$82.40</div>
+            <div class="card-change">+0.67%</div>
+          </div>
+        </div>
+
+        <!-- Market Tables -->
+        <div class="markets-section">
+          <div class="market-block">
+            <div class="block-header">
+              <span class="block-title">📈 HİSSE SENETLERİ</span>
+              <a onclick="showPage('stocks')" class="see-all">Tümünü Gör →</a>
+            </div>
+            <div class="market-table" id="homeStocksTable"></div>
+          </div>
+          <div class="market-block">
+            <div class="block-header">
+              <span class="block-title">💱 DÖVİZ</span>
+              <a onclick="showPage('forex')" class="see-all">Tümünü Gör →</a>
+            </div>
+            <div class="market-table" id="homeForexTable"></div>
+          </div>
+          <div class="market-block">
+            <div class="block-header">
+              <span class="block-title">🥇 EMTİA</span>
+              <a onclick="showPage('commodities')" class="see-all">Tümünü Gör →</a>
+            </div>
+            <div class="market-table" id="homeCommoditiesTable"></div>
+          </div>
+          <div class="market-block">
+            <div class="block-header">
+              <span class="block-title">₿ KRİPTO</span>
+              <a onclick="showPage('crypto')" class="see-all">Tümünü Gör →</a>
+            </div>
+            <div class="market-table" id="homeCryptoTable"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOCKS PAGE -->
+    <div id="stocksPage" class="page">
+      <div class="page-header">
+        <h1 class="page-title" id="stocksTitle">HİSSE SENETLERİ</h1>
+        <div class="exchange-tabs" id="exchangeTabs"></div>
+      </div>
+      <div class="stocks-grid" id="stocksGrid"></div>
+    </div>
+
+    <!-- FOREX PAGE -->
+    <div id="forexPage" class="page">
+      <div class="page-header">
+        <h1 class="page-title">DÖVİZ PİYASASI</h1>
+      </div>
+      <div class="stocks-grid" id="forexGrid"></div>
+    </div>
+
+    <!-- CRYPTO PAGE -->
+    <div id="cryptoPage" class="page">
+      <div class="page-header">
+        <h1 class="page-title">KRİPTO PARA</h1>
+      </div>
+      <div class="stocks-grid" id="cryptoGrid"></div>
+    </div>
+
+    <!-- COMMODITIES PAGE -->
+    <div id="commoditiesPage" class="page">
+      <div class="page-header">
+        <h1 class="page-title">EMTİA PİYASASI</h1>
+      </div>
+      <div class="stocks-grid" id="commoditiesGrid"></div>
+    </div>
+  </div>
+
+  <!-- DETAIL MODAL -->
+  <div id="detailModal" class="modal" onclick="closeModal(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="modal-symbol" id="modalSymbol">AAPL</div>
+          <div class="modal-name" id="modalName">Apple Inc.</div>
+        </div>
+        <div class="modal-price-block">
+          <div class="modal-price" id="modalPrice">$182.40</div>
+          <div class="modal-change" id="modalChange">+1.24%</div>
+        </div>
+        <button class="modal-close" onclick="closeModalBtn()">✕</button>
+      </div>
+      <div class="modal-stats">
+        <div class="stat-item"><div class="stat-label">AÇILIŞ</div><div class="stat-val" id="statOpen">-</div></div>
+        <div class="stat-item"><div class="stat-label">YÜKSEK</div><div class="stat-val" id="statHigh">-</div></div>
+        <div class="stat-item"><div class="stat-label">DÜŞÜK</div><div class="stat-val" id="statLow">-</div></div>
+        <div class="stat-item"><div class="stat-label">HACİM</div><div class="stat-val" id="statVol">-</div></div>
+        <div class="stat-item"><div class="stat-label">52H YÜK.</div><div class="stat-val" id="stat52H">-</div></div>
+        <div class="stat-item"><div class="stat-label">52H DÜŞ.</div><div class="stat-val" id="stat52L">-</div></div>
+      </div>
+      <div class="chart-area">
+        <canvas id="priceChart" width="800" height="300"></canvas>
+      </div>
+      <div class="chart-periods">
+        <button class="period-btn active" onclick="setPeriod('1G',this)">1G</button>
+        <button class="period-btn" onclick="setPeriod('1H',this)">1H</button>
+        <button class="period-btn" onclick="setPeriod('1A',this)">1A</button>
+        <button class="period-btn" onclick="setPeriod('3A',this)">3A</button>
+        <button class="period-btn" onclick="setPeriod('1Y',this)">1Y</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end mainTerminal -->
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
