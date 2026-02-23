@@ -12,95 +12,100 @@
 
 <!-- AUTH SCREEN -->
 <div id="authScreen" class="auth-screen">
-  <div class="auth-bg">
-    <div class="auth-grid"></div>
-    <div class="auth-glow"></div>
-  </div>
+  <div class="auth-bg"><div class="auth-grid"></div><div class="auth-glow"></div></div>
   <div class="auth-container">
     <div class="auth-logo">
       <span class="logo-fx">Finance</span><span class="logo-x">X</span>
       <div class="logo-sub">PROFESSIONAL TERMINAL</div>
     </div>
-    
     <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuth('login')">GİRİŞ YAP</button>
+      <button class="auth-tab active" onclick="switchAuth('login')">GIRIS YAP</button>
       <button class="auth-tab" onclick="switchAuth('register')">KAYIT OL</button>
     </div>
 
-    <!-- LOGIN -->
+    <!-- LOGIN FORM -->
     <div id="loginForm" class="auth-form active">
       <div class="input-group">
-        <label>E-POSTA / KULLANICI ADI</label>
-        <input type="text" id="loginEmail" placeholder="ornek@email.com">
+        <label>E-POSTA</label>
+        <input type="email" id="loginEmail" placeholder="ornek@email.com" onkeydown="if(event.key==='Enter')doLogin()">
       </div>
       <div class="input-group">
         <label>PAROLA</label>
-        <input type="password" id="loginPass" placeholder="••••••••">
+        <div class="pass-wrap">
+          <input type="password" id="loginPass" placeholder="..." onkeydown="if(event.key==='Enter')doLogin()">
+          <span class="eye-toggle" onclick="togglePass('loginPass',this)">&#128065;</span>
+        </div>
       </div>
       <div class="auth-options">
-        <label class="checkbox-label"><input type="checkbox"> Beni hatırla</label>
-        <a href="#" class="forgot-link">Parolayı Unuttum</a>
+        <label class="checkbox-label"><input type="checkbox" id="rememberMe"> Beni hatirla</label>
+        <a href="#" class="forgot-link" onclick="doForgotPassword()">Parolayi Unuttum</a>
       </div>
-      <button class="auth-btn" onclick="doLogin()">GİRİŞ YAP →</button>
+      <button class="auth-btn" id="loginBtn" onclick="doLogin()">
+        <span id="loginBtnText">GIRIS YAP</span>
+        <span id="loginSpinner" class="btn-spinner" style="display:none"></span>
+      </button>
+      <div class="auth-error" id="loginError"></div>
       <div class="auth-divider"><span>VEYA</span></div>
-      <button class="auth-btn-demo" onclick="loginDemo()">DEMO HESABIYLA GİR</button>
+      <button class="auth-btn-google" onclick="doGoogleLogin()">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.7 0 6.7 5.4 2.7 13.3l7.8 6C12.4 13 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 019.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 000 24c0 3.9.9 7.5 2.7 10.7l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.2-7.7 2.2-6.2 0-11.5-4.2-13.4-9.8l-7.8 6C6.7 42.6 14.7 48 24 48z"/></svg>
+        Google ile Giris Yap
+      </button>
+      <button class="auth-btn-demo" onclick="loginDemo()">DEMO HESABIYLA GIR</button>
     </div>
 
-    <!-- REGISTER -->
+    <!-- REGISTER FORM -->
     <div id="registerForm" class="auth-form">
       <div id="regStep1">
         <div class="input-row">
-          <div class="input-group">
-            <label>AD</label>
-            <input type="text" id="regFirstName" placeholder="Adınız">
-          </div>
-          <div class="input-group">
-            <label>SOYAD</label>
-            <input type="text" id="regLastName" placeholder="Soyadınız">
-          </div>
+          <div class="input-group"><label>AD</label><input type="text" id="regFirstName" placeholder="Adiniz"></div>
+          <div class="input-group"><label>SOYAD</label><input type="text" id="regLastName" placeholder="Soyadiniz"></div>
         </div>
-        <div class="input-group">
-          <label>KULLANICI ADI</label>
-          <input type="text" id="regUsername" placeholder="kullanici_adi">
-        </div>
-        <div class="input-group">
-          <label>E-POSTA</label>
-          <input type="email" id="regEmail" placeholder="ornek@email.com">
-        </div>
+        <div class="input-group"><label>KULLANICI ADI</label><input type="text" id="regUsername" placeholder="kullanici_adi"></div>
+        <div class="input-group"><label>E-POSTA</label><input type="email" id="regEmail" placeholder="ornek@email.com"></div>
         <div class="input-group">
           <label>PAROLA</label>
-          <input type="password" id="regPass" placeholder="En az 8 karakter">
-          <div class="pass-strength" id="passStrength"></div>
+          <div class="pass-wrap">
+            <input type="password" id="regPass" placeholder="En az 8 karakter" oninput="checkPassStrength(this.value)">
+            <span class="eye-toggle" onclick="togglePass('regPass',this)">&#128065;</span>
+          </div>
+          <div class="pass-strength-bar"><div class="pass-strength-fill" id="passStrengthFill"></div></div>
+          <div class="pass-strength-label" id="passStrengthLabel"></div>
         </div>
         <div class="input-group">
           <label>PAROLA TEKRAR</label>
-          <input type="password" id="regPass2" placeholder="Parolayı tekrar girin">
-        </div>
-        <button class="auth-btn" onclick="sendVerification()">DOĞRULAMA KODU GÖNDER →</button>
-      </div>
-      <div id="regStep2" style="display:none">
-        <div class="verify-info">
-          <div class="verify-icon">✉</div>
-          <p>E-posta adresinize 6 haneli doğrulama kodu gönderildi.</p>
-          <p class="verify-email" id="verifyEmailDisplay"></p>
-        </div>
-        <div class="input-group">
-          <label>DOĞRULAMA KODU</label>
-          <div class="code-inputs">
-            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,1)">
-            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,2)">
-            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,3)">
-            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,4)">
-            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,5)">
-            <input type="text" maxlength="1" class="code-digit" oninput="moveToNext(this,6)">
+          <div class="pass-wrap">
+            <input type="password" id="regPass2" placeholder="Tekrar girin">
+            <span class="eye-toggle" onclick="togglePass('regPass2',this)">&#128065;</span>
           </div>
         </div>
-        <div class="resend-code">
-          Kodu almadınız mı? <a href="#" onclick="resendCode()">Tekrar gönder</a>
-          <span id="resendTimer"></span>
+        <div class="input-group">
+          <label class="checkbox-label"><input type="checkbox" id="termsCheck">
+          Kullanim Kosullari'ni okudum ve kabul ediyorum</label>
         </div>
-        <button class="auth-btn" onclick="verifyCode()">HESABI OLUŞTUR →</button>
-        <button class="auth-btn-back" onclick="backToStep1()">← Geri</button>
+        <button class="auth-btn" id="regBtn" onclick="doRegister()">
+          <span id="regBtnText">HESAP OLUSTUR</span>
+          <span id="regSpinner" class="btn-spinner" style="display:none"></span>
+        </button>
+        <div class="auth-error" id="regError"></div>
+      </div>
+
+      <!-- Step 2: E-posta dogrulama -->
+      <div id="regStep2" style="display:none">
+        <div class="verify-box">
+          <div class="verify-icon-big">&#9993;&#65039;</div>
+          <h3>E-postanizi Dogrulayin</h3>
+          <p>Asagidaki adrese dogrulama e-postasi gonderildi:</p>
+          <div class="verify-email-addr" id="verifyEmailDisplay"></div>
+          <p class="verify-note">E-postanizin gelen kutusunu kontrol edin ve linke tiklayin. Sonra asagidaki butona basin.</p>
+          <button class="auth-btn" onclick="checkEmailVerified()">Dogruladim, Giris Yap</button>
+          <div class="resend-row">
+            <span>E-posta gelmedi mi?</span>
+            <button class="resend-btn" id="resendBtn" onclick="resendVerification()">Tekrar Gonder</button>
+            <span id="resendTimer" class="resend-timer"></span>
+          </div>
+          <button class="auth-btn-back" onclick="backToRegStep1()">Geri Don</button>
+          <div class="auth-error" id="verifyError"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -109,98 +114,109 @@
 <!-- MAIN TERMINAL -->
 <div id="mainTerminal" style="display:none">
 
-  <!-- TOP TICKER BAND -->
+  <!-- TICKER -->
   <div class="ticker-band">
-    <div class="ticker-label">CANLI</div>
-    <div class="ticker-wrapper">
-      <div class="ticker-track" id="tickerTrack"></div>
-    </div>
+    <div class="ticker-label">&#9679; CANLI</div>
+    <div class="ticker-wrapper"><div class="ticker-track" id="tickerTrack"></div></div>
+    <div class="api-status" id="apiStatus" title="API Durumu">&#9679;</div>
   </div>
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="nav-logo">
+    <div class="nav-logo" onclick="showPage('home')">
       <span class="logo-fx">Finance</span><span class="logo-x">X</span>
     </div>
     <div class="nav-links">
-      <div class="nav-item active" onclick="showPage('home')">
-        <span>ANASAYFA</span>
-      </div>
+      <div class="nav-item active" onclick="showPage('home')"><span>ANASAYFA</span></div>
       <div class="nav-item dropdown">
-        <span onclick="showPage('stocks')">HİSSELER</span>
-        <div class="dropdown-menu">
+        <span onclick="showPage('stocks')">HISSELER</span>
+        <div class="dropdown-menu stocks-menu">
           <div class="dropdown-section">
-            <div class="dropdown-title">🌏 ASYA BORSALARI</div>
+            <div class="dropdown-title">&#127759; ASYA BORSALARI</div>
             <a onclick="showExchange('tokyo')">Tokyo (Nikkei 225)</a>
-            <a onclick="showExchange('shanghai')">Şangay (SSE)</a>
+            <a onclick="showExchange('shanghai')">Sangay (SSE)</a>
             <a onclick="showExchange('hongkong')">Hong Kong (HSI)</a>
             <a onclick="showExchange('seoul')">Seul (KOSPI)</a>
           </div>
           <div class="dropdown-section">
-            <div class="dropdown-title">🌍 AVRUPA BORSALARI</div>
+            <div class="dropdown-title">&#127757; AVRUPA BORSALARI</div>
             <a onclick="showExchange('london')">Londra (FTSE 100)</a>
             <a onclick="showExchange('frankfurt')">Frankfurt (DAX)</a>
             <a onclick="showExchange('paris')">Paris (CAC 40)</a>
             <a onclick="showExchange('amsterdam')">Amsterdam (AEX)</a>
           </div>
           <div class="dropdown-section">
-            <div class="dropdown-title">🇹🇷 TÜRK BORSASI</div>
+            <div class="dropdown-title">&#127481;&#127479; TURK BORSASI</div>
             <a onclick="showExchange('bist')">BIST 100</a>
           </div>
           <div class="dropdown-section">
-            <div class="dropdown-title">🇺🇸 AMERİKAN BORSALARI</div>
+            <div class="dropdown-title">&#127482;&#127480; AMERIKAN BORSALARI</div>
             <a onclick="showExchange('nyse')">NYSE</a>
             <a onclick="showExchange('nasdaq')">NASDAQ</a>
-            <a onclick="showExchange('sp500')">S&P 500</a>
+            <a onclick="showExchange('sp500')">S&amp;P 500</a>
           </div>
         </div>
       </div>
       <div class="nav-item dropdown">
-        <span onclick="showPage('forex')">DÖVİZ</span>
+        <span onclick="showPage('forex')">DOVIZ</span>
         <div class="dropdown-menu">
           <div class="dropdown-section">
-            <div class="dropdown-title">💱 DÖVİZ ÇİFTLERİ</div>
-            <a onclick="showForexGroup('major')">Majör Dövizler</a>
-            <a onclick="showForexGroup('minor')">Minör Dövizler</a>
-            <a onclick="showForexGroup('exotic')">Egzotik Dövizler</a>
-            <a onclick="showForexGroup('emerging')">Gelişen Piyasalar</a>
+            <div class="dropdown-title">&#128178; DOVIZ CIFTLERI</div>
+            <a onclick="showForexGroup('major')">Major Dovizler</a>
+            <a onclick="showForexGroup('minor')">Minor Dovizler</a>
+            <a onclick="showForexGroup('exotic')">Egzotik Dovizler</a>
+            <a onclick="showForexGroup('emerging')">Gelisen Piyasalar</a>
           </div>
         </div>
       </div>
       <div class="nav-item dropdown">
-        <span onclick="showPage('crypto')">KRİPTO</span>
+        <span onclick="showPage('crypto')">KRIPTO</span>
         <div class="dropdown-menu">
           <div class="dropdown-section">
-            <div class="dropdown-title">₿ KRİPTO PARA</div>
+            <div class="dropdown-title">&#8383; KRIPTO PARA</div>
+            <a onclick="showCryptoGroup('all')">Tum Kriptolar (100)</a>
             <a onclick="showCryptoGroup('top10')">Top 10</a>
             <a onclick="showCryptoGroup('defi')">DeFi Tokenleri</a>
             <a onclick="showCryptoGroup('altcoins')">Altcoinler</a>
-            <a onclick="showCryptoGroup('all')">Tümü (100)</a>
           </div>
         </div>
       </div>
       <div class="nav-item dropdown">
-        <span onclick="showPage('commodities')">EMTİA</span>
+        <span onclick="showPage('commodities')">EMTIA</span>
         <div class="dropdown-menu">
           <div class="dropdown-section">
-            <div class="dropdown-title">🥇 DEĞERLİ METALLER</div>
-            <a onclick="showCommodityGroup('metals')">Metaller (Altın, Gümüş...)</a>
-            <a onclick="showCommodityGroup('energy')">Enerji (Petrol, Doğalgaz...)</a>
-            <a onclick="showCommodityGroup('agriculture')">Tarım Ürünleri</a>
+            <div class="dropdown-title">&#127867; EMTIA</div>
+            <a onclick="showCommodityGroup('all')">Tum Emtialar</a>
+            <a onclick="showCommodityGroup('metals')">Degerli Metaller</a>
+            <a onclick="showCommodityGroup('energy')">Enerji</a>
+            <a onclick="showCommodityGroup('agriculture')">Tarim Urunleri</a>
           </div>
         </div>
+      </div>
+      <div class="nav-item" onclick="showPage('favorites')">
+        <span>&#11088; FAVORILER</span>
+        <span class="fav-count" id="favCountBadge" style="display:none">0</span>
       </div>
     </div>
     <div class="nav-right">
       <div class="market-time" id="marketTime"></div>
       <div class="nav-user" onclick="toggleUserMenu()">
-        <div class="user-avatar" id="userAvatar">U</div>
-        <span id="userName">Kullanıcı</span>
+        <div class="user-avatar" id="userAvatar">?</div>
+        <div class="user-info-nav">
+          <span class="user-name" id="userName">Kullanici</span>
+          <span class="user-email-nav" id="userEmailNav"></span>
+        </div>
         <div class="user-dropdown" id="userDropdown">
-          <a href="#">Profil</a>
-          <a href="#">Ayarlar</a>
-          <a href="#">Favoriler</a>
-          <a href="#" onclick="doLogout()">Çıkış Yap</a>
+          <div class="ud-header">
+            <div class="ud-avatar" id="udAvatar">?</div>
+            <div><div class="ud-name" id="udName">-</div><div class="ud-email" id="udEmail">-</div></div>
+          </div>
+          <div class="ud-divider"></div>
+          <a onclick="showPage('profile')">Profilim</a>
+          <a onclick="showPage('favorites')">Favorilerim</a>
+          <a onclick="showPage('settings')">Ayarlar</a>
+          <div class="ud-divider"></div>
+          <a onclick="doLogout()" class="ud-logout">Cikis Yap</a>
         </div>
       </div>
     </div>
@@ -208,132 +224,207 @@
 
   <!-- PAGES -->
   <div id="pageContent">
-    <!-- HOME PAGE -->
+
+    <!-- HOME -->
     <div id="homePage" class="page active">
       <div class="dashboard-grid">
-        <!-- Summary Cards -->
-        <div class="summary-cards">
-          <div class="summary-card green">
-            <div class="card-label">ALTIN</div>
-            <div class="card-value" id="goldCard">$2,341.50</div>
-            <div class="card-change">+0.85%</div>
-          </div>
-          <div class="summary-card red">
-            <div class="card-label">USD/TRY</div>
-            <div class="card-value" id="usdCard">₺32.45</div>
-            <div class="card-change">-0.23%</div>
-          </div>
-          <div class="summary-card green">
-            <div class="card-label">BİTCOİN</div>
-            <div class="card-value" id="btcCard">$67,234</div>
-            <div class="card-change">+2.14%</div>
-          </div>
-          <div class="summary-card green">
-            <div class="card-label">BIST 100</div>
-            <div class="card-value">9,847</div>
-            <div class="card-change">+1.02%</div>
-          </div>
-          <div class="summary-card red">
-            <div class="card-label">S&P 500</div>
-            <div class="card-value">5,234</div>
-            <div class="card-change">-0.45%</div>
-          </div>
-          <div class="summary-card green">
-            <div class="card-label">PETROL (WTI)</div>
-            <div class="card-value">$82.40</div>
-            <div class="card-change">+0.67%</div>
-          </div>
-        </div>
-
-        <!-- Market Tables -->
+        <div class="summary-cards" id="summaryCards"></div>
         <div class="markets-section">
           <div class="market-block">
-            <div class="block-header">
-              <span class="block-title">📈 HİSSE SENETLERİ</span>
-              <a onclick="showPage('stocks')" class="see-all">Tümünü Gör →</a>
-            </div>
+            <div class="block-header"><span class="block-title">HISSE SENETLERI</span><a onclick="showPage('stocks')" class="see-all">Tumunu Gor</a></div>
             <div class="market-table" id="homeStocksTable"></div>
           </div>
           <div class="market-block">
-            <div class="block-header">
-              <span class="block-title">💱 DÖVİZ</span>
-              <a onclick="showPage('forex')" class="see-all">Tümünü Gör →</a>
-            </div>
-            <div class="market-table" id="homeForexTable"></div>
+            <div class="block-header"><span class="block-title">DOVIZ</span><a onclick="showPage('forex')" class="see-all">Tumunu Gor</a></div>
+            <div class="market-table" id="homeForexTable"><div class="loading-row">Yukleniyor...</div></div>
           </div>
           <div class="market-block">
-            <div class="block-header">
-              <span class="block-title">🥇 EMTİA</span>
-              <a onclick="showPage('commodities')" class="see-all">Tümünü Gör →</a>
-            </div>
+            <div class="block-header"><span class="block-title">EMTIA</span><a onclick="showPage('commodities')" class="see-all">Tumunu Gor</a></div>
             <div class="market-table" id="homeCommoditiesTable"></div>
           </div>
           <div class="market-block">
-            <div class="block-header">
-              <span class="block-title">₿ KRİPTO</span>
-              <a onclick="showPage('crypto')" class="see-all">Tümünü Gör →</a>
-            </div>
-            <div class="market-table" id="homeCryptoTable"></div>
+            <div class="block-header"><span class="block-title">KRIPTO</span><a onclick="showPage('crypto')" class="see-all">Tumunu Gor</a></div>
+            <div class="market-table" id="homeCryptoTable"><div class="loading-row">Yukleniyor...</div></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- STOCKS PAGE -->
+    <!-- STOCKS -->
     <div id="stocksPage" class="page">
       <div class="page-header">
-        <h1 class="page-title" id="stocksTitle">HİSSE SENETLERİ</h1>
+        <h1 class="page-title" id="stocksTitle">HISSE SENETLERI</h1>
         <div class="exchange-tabs" id="exchangeTabs"></div>
+      </div>
+      <div class="page-loading" id="stocksLoading" style="display:none">
+        <div class="loading-spinner"></div><span>Alpha Vantage'dan veriler cekiliyor...</span>
       </div>
       <div class="stocks-grid" id="stocksGrid"></div>
     </div>
 
-    <!-- FOREX PAGE -->
+    <!-- FOREX -->
     <div id="forexPage" class="page">
       <div class="page-header">
-        <h1 class="page-title">DÖVİZ PİYASASI</h1>
+        <h1 class="page-title">DOVIZ PIYASASI</h1>
+        <div class="api-info-tag">ExchangeRate-API | Son guncelleme: <span id="forexUpdateTime">-</span></div>
       </div>
       <div class="stocks-grid" id="forexGrid"></div>
     </div>
 
-    <!-- CRYPTO PAGE -->
+    <!-- CRYPTO -->
     <div id="cryptoPage" class="page">
       <div class="page-header">
-        <h1 class="page-title">KRİPTO PARA</h1>
+        <h1 class="page-title">KRIPTO PARA</h1>
+        <div class="api-info-tag">CoinGecko API | Son guncelleme: <span id="cryptoUpdateTime">-</span></div>
       </div>
       <div class="stocks-grid" id="cryptoGrid"></div>
     </div>
 
-    <!-- COMMODITIES PAGE -->
+    <!-- COMMODITIES -->
     <div id="commoditiesPage" class="page">
-      <div class="page-header">
-        <h1 class="page-title">EMTİA PİYASASI</h1>
-      </div>
+      <div class="page-header"><h1 class="page-title">EMTIA PIYASASI</h1></div>
       <div class="stocks-grid" id="commoditiesGrid"></div>
     </div>
-  </div>
+
+    <!-- FAVORITES -->
+    <div id="favoritesPage" class="page">
+      <div class="page-header">
+        <h1 class="page-title">FAVORILERIM</h1>
+        <div class="api-info-tag" id="favInfo">Firestore'dan yukleniyor...</div>
+      </div>
+      <div id="favEmptyState" class="empty-state" style="display:none">
+        <div class="empty-icon">&#11088;</div>
+        <h3>Henuz favori eklemediniz</h3>
+        <p>Herhangi bir varligin kartinda yildiz ikonuna tiklayarak favorilere ekleyebilirsiniz.</p>
+      </div>
+      <div class="stocks-grid" id="favGrid"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profilePage" class="page">
+      <div class="page-header"><h1 class="page-title">PROFILIM</h1></div>
+      <div class="profile-layout">
+        <div class="profile-sidebar">
+          <div class="profile-avatar-big" id="profileAvatarBig">?</div>
+          <div class="profile-display-name" id="profileDisplayName">-</div>
+          <div class="profile-email-show" id="profileEmailShow">-</div>
+          <div class="profile-verify-badge" id="profileVerifyBadge"></div>
+          <div class="profile-join-date" id="profileJoinDate"></div>
+        </div>
+        <div class="profile-main">
+          <div class="profile-section">
+            <div class="profile-section-title">KISISEL BILGILER</div>
+            <div class="input-row">
+              <div class="input-group"><label>AD</label><input type="text" id="profileFirstName" placeholder="Adiniz"></div>
+              <div class="input-group"><label>SOYAD</label><input type="text" id="profileLastName" placeholder="Soyadiniz"></div>
+            </div>
+            <div class="input-group"><label>KULLANICI ADI</label><input type="text" id="profileUsername" placeholder="kullanici_adi"></div>
+            <div class="input-group">
+              <label>E-POSTA <span class="readonly-badge">Degistirilemez</span></label>
+              <input type="email" id="profileEmail" disabled>
+            </div>
+            <div class="input-group"><label>TELEFON (opsiyonel)</label><input type="tel" id="profilePhone" placeholder="+90 5XX XXX XX XX"></div>
+            <button class="auth-btn profile-save-btn" onclick="saveProfile()">BILGILERI KAYDET</button>
+          </div>
+          <div class="profile-section">
+            <div class="profile-section-title">PAROLA DEGISTIR</div>
+            <div class="input-group">
+              <label>MEVCUT PAROLA</label>
+              <div class="pass-wrap">
+                <input type="password" id="currentPass" placeholder="Mevcut parolaniz">
+                <span class="eye-toggle" onclick="togglePass('currentPass',this)">&#128065;</span>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>YENI PAROLA</label>
+              <div class="pass-wrap">
+                <input type="password" id="newPass" placeholder="Yeni parolaniz">
+                <span class="eye-toggle" onclick="togglePass('newPass',this)">&#128065;</span>
+              </div>
+            </div>
+            <div class="input-group">
+              <label>YENI PAROLA TEKRAR</label>
+              <div class="pass-wrap">
+                <input type="password" id="newPass2" placeholder="Tekrar girin">
+                <span class="eye-toggle" onclick="togglePass('newPass2',this)">&#128065;</span>
+              </div>
+            </div>
+            <button class="auth-btn profile-save-btn" onclick="changePassword()">PAROLAYI DEGISTIR</button>
+          </div>
+          <div class="profile-section danger-zone">
+            <div class="profile-section-title">TEHLIKELI BOLGE</div>
+            <p style="color:var(--text-secondary);font-size:12px;margin-bottom:14px">Hesabinizi silmek geri alinamaz. Tum verileriniz silinir.</p>
+            <button class="danger-btn" onclick="confirmDeleteAccount()">Hesabimi Kalici Olarak Sil</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="settingsPage" class="page">
+      <div class="page-header"><h1 class="page-title">AYARLAR</h1></div>
+      <div class="settings-layout">
+        <div class="settings-block">
+          <div class="settings-title">API ANAHTARLARI</div>
+          <div class="input-group">
+            <label>ALPHA VANTAGE API KEY</label>
+            <input type="text" id="settingAlphaKey" placeholder="Buraya API anahtarinizi girin">
+            <div class="api-key-hint">Ucretsiz key icin: alphavantage.co -- Gunde 25 istek, 5 istek/dakika</div>
+          </div>
+          <button class="auth-btn profile-save-btn" onclick="saveApiKeys()">KAYDET</button>
+        </div>
+        <div class="settings-block">
+          <div class="settings-title">PARA BIRIMI</div>
+          <div class="settings-row">
+            <span>Ana Para Birimi</span>
+            <select id="settingCurrency" onchange="saveSetting('currency',this.value)">
+              <option value="USD">USD ($)</option>
+              <option value="TRY">TRY (TL)</option>
+              <option value="EUR">EUR (Euro)</option>
+            </select>
+          </div>
+        </div>
+        <div class="settings-block">
+          <div class="settings-title">VERI YENILEME</div>
+          <div class="settings-row">
+            <span>Otomatik Yenileme</span>
+            <select id="settingRefresh" onchange="saveSetting('refresh',this.value)">
+              <option value="30">30 saniye</option>
+              <option value="60" selected>1 dakika</option>
+              <option value="300">5 dakika</option>
+              <option value="0">Manuel</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pageContent -->
 
   <!-- DETAIL MODAL -->
   <div id="detailModal" class="modal" onclick="closeModal(event)">
     <div class="modal-box">
       <div class="modal-header">
         <div>
-          <div class="modal-symbol" id="modalSymbol">AAPL</div>
-          <div class="modal-name" id="modalName">Apple Inc.</div>
+          <div class="modal-symbol" id="modalSymbol">-</div>
+          <div class="modal-name" id="modalName">-</div>
         </div>
         <div class="modal-price-block">
-          <div class="modal-price" id="modalPrice">$182.40</div>
-          <div class="modal-change" id="modalChange">+1.24%</div>
+          <div class="modal-price" id="modalPrice">-</div>
+          <div class="modal-change" id="modalChange">-</div>
         </div>
-        <button class="modal-close" onclick="closeModalBtn()">✕</button>
+        <div class="modal-actions">
+          <button class="fav-btn" id="modalFavBtn" onclick="toggleFavFromModal()" title="Favorilere ekle">&#9734;</button>
+          <button class="modal-close" onclick="closeModalBtn()">X</button>
+        </div>
       </div>
       <div class="modal-stats">
-        <div class="stat-item"><div class="stat-label">AÇILIŞ</div><div class="stat-val" id="statOpen">-</div></div>
-        <div class="stat-item"><div class="stat-label">YÜKSEK</div><div class="stat-val" id="statHigh">-</div></div>
-        <div class="stat-item"><div class="stat-label">DÜŞÜK</div><div class="stat-val" id="statLow">-</div></div>
-        <div class="stat-item"><div class="stat-label">HACİM</div><div class="stat-val" id="statVol">-</div></div>
-        <div class="stat-item"><div class="stat-label">52H YÜK.</div><div class="stat-val" id="stat52H">-</div></div>
-        <div class="stat-item"><div class="stat-label">52H DÜŞ.</div><div class="stat-val" id="stat52L">-</div></div>
+        <div class="stat-item"><div class="stat-label">ACILIS</div><div class="stat-val" id="statOpen">-</div></div>
+        <div class="stat-item"><div class="stat-label">YUKSEK</div><div class="stat-val" id="statHigh">-</div></div>
+        <div class="stat-item"><div class="stat-label">DUSUK</div><div class="stat-val" id="statLow">-</div></div>
+        <div class="stat-item"><div class="stat-label">HACIM</div><div class="stat-val" id="statVol">-</div></div>
+        <div class="stat-item"><div class="stat-label">52H YUK.</div><div class="stat-val" id="stat52H">-</div></div>
+        <div class="stat-item"><div class="stat-label">52H DUS.</div><div class="stat-val" id="stat52L">-</div></div>
       </div>
       <div class="chart-area">
         <canvas id="priceChart" width="800" height="300"></canvas>
@@ -348,9 +439,64 @@
     </div>
   </div>
 
-</div><!-- end mainTerminal -->
+</div><!-- /mainTerminal -->
+
+<!-- FIREBASE SDK (ESM) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, sendEmailVerification, sendPasswordResetEmail,
+  updatePassword, reauthenticateWithCredential, EmailAuthProvider,
+  GoogleAuthProvider, signInWithPopup, onAuthStateChanged,
+  deleteUser, updateProfile, setPersistence,
+  browserLocalPersistence, browserSessionPersistence
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc,
+  collection, getDocs, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ================================================================
+//  FIREBASE YAPILANDIRMASI
+//  Firebase Console > Proje Ayarlari > Genel > Firebase SDK parcacigi
+//  adresinden asagidaki degerleri kendi projenizden alip doldurun.
+//  https://console.firebase.google.com
+// ================================================================
+const firebaseConfig = {
+  apiKey:            "AIzaSyAeaIBX_7rU_pzx2rqN06AM1UmbVTUlGXw",
+  authDomain:        "financex-6a9c1.firebaseapp.com",
+  projectId:         "financex-6a9c1",
+  storageBucket:     "financex-6a9c1.firebasestorage.app",
+  messagingSenderId: "149070301233",
+  appId:             "1:149070301233:web:97973472519d9251f6ed10",
+  measurementId:     "G-RJB79KWDH7"
+};
+// ================================================================
+
+const app      = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+window.__FB = {
+  auth, db,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, sendEmailVerification, sendPasswordResetEmail,
+  updatePassword, reauthenticateWithCredential, EmailAuthProvider,
+  GoogleAuthProvider, signInWithPopup, deleteUser, updateProfile,
+  setPersistence, browserLocalPersistence, browserSessionPersistence,
+  doc, setDoc, getDoc, updateDoc, deleteDoc, collection, getDocs, serverTimestamp
+};
+
+onAuthStateChanged(auth, user => {
+  if (typeof window.onAuthChanged === 'function') window.onAuthChanged(user);
+});
+</script>
 
 <script src="data.js"></script>
+<script src="api.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
